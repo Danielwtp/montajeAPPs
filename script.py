@@ -29,17 +29,27 @@ while (name != "" and name != "y" and name != "n"):
 file = open(dir+str(sys.argv[1]))#close the file plz
 
 numero = 0
+dependencias = []
 if name == "y":
     print("Cuales?:(Escribe los numeros separados por espacios.)")
     for i in file:
         print(str(numero) + ": " + i[0:-1])
+        dependencias.append(i[0:-1])
         numero = numero + 1
     ids = input()
     for j in ids: 
-        if j != " ":
+        if j != " " and j.isdigit():
             if int(j[0]) >= numero:
                 print(j+" no pertenece a ninguna de las dependencias")
                 file.close()
                 exit(1)
-            
-    
+            version = input("Cual es la nueva version de " + dependencias[int(j[0])].split(" ")[0] + "?\n")
+            for n in version.split("."):
+                if n.isdigit() == False:
+                    print(version + ": No es una version valida.")
+                    file.close()
+                    exit(1)
+            dependencias[int(j[0])] = dependencias[int(j[0])].split(" ")[0] + version
+
+
+        
