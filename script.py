@@ -27,6 +27,7 @@ while (name != "" and name != "y" and name != "n"):
     name = input("Presiona y(si) or n(no) por favor\n")
 
 file = open(dir+str(sys.argv[1]))#close the file plz
+file2 = open(dir+str(sys.argv[1]) + ".tmp", "w+")
 
 numero = 0
 dependencias = []
@@ -35,21 +36,23 @@ if name == "y":
     for i in file:
         print(str(numero) + ": " + i[0:-1])
         dependencias.append(i[0:-1])
-        numero = numero + 1
+        numero += 1
     ids = input()
     for j in ids: 
-        if j != " " and j.isdigit():
-            if int(j[0]) >= numero:
-                print(j+" no pertenece a ninguna de las dependencias")
-                file.close()
-                exit(1)
+        if j != " ":
+            if int(j[0]) > len(dependencias)-1 or not(j.isdigit()):
+                print(j+" no es a ninguna de las dependencias")
             version = input("Cual es la nueva version de " + dependencias[int(j[0])].split(" ")[0] + "?\n")
             for n in version.split("."):
-                if n.isdigit() == False:
-                    print(version + ": No es una version valida.")
+                while n.isdigit() == False:
+                    print(version + ": No es una numero valido.")
                     file.close()
                     exit(1)
-            dependencias[int(j[0])] = dependencias[int(j[0])].split(" ")[0] + version
-
-
-        
+            dependencias[int(j[0])] = dependencias[int(j[0])].split(" ")[0] + " " + version
+    for i in dependencias:
+        file2.write(i + "\n")
+    file.close()
+    os.remove(dir+str(sys.argv[1]))
+    os.rename(dir+str(sys.argv[1]) + ".tmp", dir+str(sys.argv[1]))
+file2.close()
+os.system( 'python3 ' + os.getcwd()+"/scripts/"+str(sys.argv[1]) + '.py ' + str(sys.argv[2]) )
