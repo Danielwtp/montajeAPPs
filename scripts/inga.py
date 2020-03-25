@@ -9,7 +9,7 @@ def executeThis(coso):
     proc.communicate()
     exit_code = proc.wait()
     if exit_code != 0:
-        sys.exit(coso + " FAILED")
+        print(coso + " FAILED")
 
 os.system('')
 os.chdir("..")#salimos de la carpeta inicial de montajeapps(conflictos a la hora de hacer push)
@@ -50,15 +50,16 @@ for i in dependencias:
         executeThis( 'nvm use 10.9 | npm install -g ' + i.split(" ")[0] + "@" +  i.split(" ")[1] )
 
 print("./INSTALL.sh-------------------------------")
-executeThis('npm i')
-os.system('nvm use 10.9 | ionic cordova prepare ios --no-interactive --confirm')
-os.system('nvm use 10.9 | ionic cordova prepare android --no-interactive --confirm')
-os.system('nvm use 10.9 | ionic cordova prepare browser --no-interactive --confirm')
+
+executeThis('nvm use 10.9 | ionic cordova prepare ios --no-interactive --confirm')
+executeThis('nvm use 10.9 | ionic cordova prepare android --no-interactive --confirm')
+executeThis('nvm use 10.9 | ionic cordova prepare browser --no-interactive --confirm')
+executeThis('nvm use 10.9 | npm i')
 
 print("COMANDOS EXTRA-------------------------------")
-os.system('nvm use 10.9 | ionic cordova plugin add cordova-plugin-firebase-analytics')
-os.system('nvm use 10.9 | npm install @ionic-native/firebase-analytics')
-os.system('nvm use 10.9 | ionic cordova plugin add cordova-plugin-app-version')
+executeThis('nvm use 10.9 | ionic cordova plugin add cordova-plugin-firebase-analytics')
+executeThis('nvm use 10.9 | npm install @ionic-native/firebase-analytics')
+executeThis('nvm use 10.9 | ionic cordova plugin add cordova-plugin-app-version')
 #ionic cordova plugin add cordova-plugin-iroot --save
 
 print("Copiando firebase files....")
@@ -77,6 +78,8 @@ if (str(sys.argv[1]) == "pre" ):
 else:
     os.system( "sed -i -e 's/.dev./.stg./g' config.xml" )
     os.system( "sed -i -e 's/test/stage/g' config.xml" )
+
+executeThis('nvm use 10.9 | ionic cordova prepare android ios')
 
 print("Finished!")
 
