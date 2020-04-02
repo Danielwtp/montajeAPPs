@@ -71,6 +71,12 @@ else:
 copyfile( firebaseDIR + "google-services.json", os.getcwd() + "/google-services.json" )
 copyfile( firebaseDIR + "GoogleService-Info.plist", os.getcwd() + "/GoogleService-Info.plist" )
 
+print("POD UPDATE/INSTALL....")
+os.chdir("platforms/ios")
+os.system("pod update")
+os.system("pod install")
+os.chdir("../..")
+
 print("Modificando config.xml && enviroment.ts....")
 if (str(sys.argv[1]) == "pre" ): 
     os.system( "sed -i -e 's/.dev././g' config.xml" )
