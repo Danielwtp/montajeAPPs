@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, fileinput, sys
+import os, sys
 from os import path, listdir
 
 
@@ -23,7 +23,7 @@ if (str(sys.argv[2]) != "pre" and str(sys.argv[2]) != "stg"):
 
 #Check de versiones.
 name = input("Ha cambiado alguna version de "+ str(sys.argv[1]) +"?(y/N)\n")
-while (name != "" and name != "y" and name != "n"):
+while (name != "" and name != "y" and name != "n" and name != "Y" and name != "N"):
     name = input("Presiona y(si) or n(no) por favor\n")
 
 

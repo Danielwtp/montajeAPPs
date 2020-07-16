@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
-#!/usr/bin/env node
-import os, fileinput, sys, subprocess
-from os import path, listdir
-from shutil import copyfile
+
+import os, sys, subprocess
 
 def executeThis(coso):
     proc = subprocess.Popen(['/bin/bash', '-i', '-c', coso])
     proc.communicate()
-    exit_code = proc.wait()
-    if exit_code != 0:
+    if proc.wait() != 0:
         print(coso + " FAILED")
 
 os.chdir("..")#salimos de la carpeta inicial de montajeapps(conflictos a la hora de hacer push)
-verFileDir = str(os.getcwd()) + "/montajeAPPs/versiones/select"
-res=path.exists( str(os.getcwd()) + "/fe-select" )#Pa saber si el proyecto estaba antes.
+verFileDir = str(os.getcwd()) + "/montajeAPPs/versiones/selectAll"
+res=os.path.exists(str(os.getcwd()) + "/fe-select" )#Pa saber si el proyecto estaba antes.
 if not res:
     os.system('git clone git@gitlab.vipera.cloud:santanderlab/sanlab-select/fe-select.git')
     os.chdir("fe-select")
@@ -38,28 +35,25 @@ verFile.close()#close the verFile plz
 
 print("NVM USE NODE--------------------------------------")
 executeThis('nvm use node')
-exit(0)
 print("NVM INSTALL " + dependencias[0].split(" ")[1] + "--------------------------------------")
 nvmVer = dependencias[0].split(" ")[1]
 executeThis( 'nvm install ' + nvmVer )
 dependencias.pop(0)
 
-for i in dependencias:
-    if i != "" and not res:
-        print("NPM INSTALL -g "  + i.split(" ")[0] + "@" +  i.split(" ")[1] + "--------------------------------------")
-        executeThis( 'nvm use ' + nvmVer + ' | npm install -g ' + i.split(" ")[0] + "@" +  i.split(" ")[1] )
+if not res:
+    for i in dependencias:
+        if i != "":
+            print("NPM INSTALL -g "  + i.split(" ")[0] + "@" +  i.split(" ")[1] + "--------------------------------------")
+            executeThis( 'nvm use ' + nvmVer + ' | npm install -g ' + i.split(" ")[0] + "@" +  i.split(" ")[1] )
+    
+    print("Adding platforms------------------------------------------------------------")
+    executeThis('nvm use ' + nvmVer + ' | ionic cordova platform add ios --no-interactive --confirm')
+    executeThis('nvm use ' + nvmVer + ' | ionic cordova platform add android --no-interactive --confirm')
+    executeThis('nvm use ' + nvmVer + ' | npm i')
 
-print("./INSTALL.sh-------------------------------")
+executeThis('nvm use ' + nvmVer + ' | ionic cordova prepare android ios --no-interactive --confirm')
 
-executeThis('nvm use ' + nvmVer + ' | ionic cordova rm ios --no-interactive --confirm')
-executeThis('nvm use ' + nvmVer + ' | ionic cordova rm android --no-interactive --confirm')
-executeThis('nvm use ' + nvmVer + ' | ionic cordova add ios --no-interactive --confirm')
-executeThis('nvm use ' + nvmVer + ' | ionic cordova add android --no-interactive --confirm')
-executeThis('nvm use ' + nvmVer + ' | npm i')
-
-executeThis('nvm use ' + nvmVer + ' | ionic cordova prepare android ios')
-
-print("Finished!")
+print("Finish!")
 
 
 #os.replace("os.getcwd()" + , "path/to/new/destination/for/file.foo")
